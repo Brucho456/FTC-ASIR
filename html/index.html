@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Dashboard - Production Environment</title>
+    <style>
+        :root {
+            --primary-color: #00ff88;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .dashboard-container {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 700px;
+            width: 90%;
+            border-top: 4px solid var(--primary-color);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+        .header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-size: 0.95rem;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+        .status-card {
+            background-color: #0f172a;
+            padding: 1.2rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #334155;
+            transition: all 0.2s;
+        }
+        .status-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+        }
+        .icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        .value {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        .live-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 8px;
+            box-shadow: 0 0 10px var(--primary-color);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid #334155;
+            padding-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="header">
+            <h1><span class="live-indicator"></span>Cloud Managed Dashboard</h1>
+            <p>Infraestructura Segura y Automatizada • Entorno de Producción</p>
+        </div>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="icon">🔒</div>
+                <div class="value">HTTPS / TLS v1.3</div>
+                <div class="label">Proxy Inverso Nginx</div>
+            </div>
+            <div class="status-card">
+                <div class="icon">🐳</div>
+                <div class="value">Docker Container (Up)</div>
+                <div class="label">Entorno Aislado React</div>
+            </div>
+            <div class="status-card">
+                <div class="icon">🛡️</div>
+                <div class="value">Netfilter / IPTABLES</div>
+                <div class="label">Bastionado Perimetral</div>
+            </div>
+            <div class="status-card">
+                <div class="icon">⏱️</div>
+                <div class="value" id="uptime">00h 00m 00s</div>
+                <div class="label">Uptime del Servicio</div>
+            </div>
+            <div class="status-card">
+                <div class="icon">📊</div>
+                <div class="value" id="cpu-load">1.2%</div>
+                <div class="label">Carga de CPU Simulada</div>
+            </div>
+            <div class="status-card">
+                <div class="icon">💾</div>
+                <div class="value" id="ram-usage">142 MB</div>
+                <div class="label">Uso de Memoria RAM</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Proyecto Fin de Ciclo ASIR • C.P.R. Liceo "La Paz" • Autor: Bruno Sande Noriega
+        </div>
+    </div>
+
+    <script>
+        // Lógica del Uptime Real (Cronómetro desde que se carga la página)
+        let totalSegundos = 0;
+        function actualizarUptime() {
+            totalSegundos++;
+            const horas = String(Math.floor(totalSegundos / 3600)).padStart(2, '0');
+            const minutos = String(Math.floor((totalSegundos % 3600) / 60)).padStart(2, '0');
+            const segundos = String(totalSegundos % 60).padStart(2, '0');
+            document.getElementById('uptime').textContent = `${horas}h ${minutos}m ${segundos}s`;
+        }
+
+        // Lógica de Métricas de Servidor Dinámicas (Flutuación aleatoria realista)
+        function actualizarMetricas() {
+            // CPU oscila entre 0.8% y 4.5%
+            const cpu = (Math.random() * (4.5 - 0.8) + 0.8).toFixed(1);
+            // RAM oscila entre 138MB y 146MB
+            const ram = Math.floor(Math.random() * (146 - 138) + 138);
+
+            document.getElementById('cpu-load').textContent = `${cpu}%`;
+            document.getElementById('ram-usage').textContent = `${ram} MB`;
+        }
+
+        // Intervalos de actualización
+        setInterval(actualizarUptime, 1000);
+        setInterval(actualizarMetricas, 3000);
+    </script>
+
+</body>
+</html>

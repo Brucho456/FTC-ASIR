@@ -2,7 +2,7 @@
 apt-get update -y
 apt-get install -y docker.io nginx iptables-persistent
 
-docker run -d --name app_web -p 8080:80 nginx:alpine
+docker run -d --name app_web -p 8080:80 -v /home/bruno/FTC-ASIR/html:/usr/share/nginx/html nginx:alpine
 
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout /etc/ssl/private/nginx-tfc.key \
