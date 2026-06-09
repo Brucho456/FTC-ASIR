@@ -7,7 +7,7 @@ docker run -d --name app_web -p 8080:80 -v /home/bruno/FTC-ASIR/html:/usr/share/
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout /etc/ssl/private/nginx-tfc.key \
   -out /etc/ssl/certs/nginx-tfc.crt \
-  -subj "/CN=servidortfc.local"
+  -subj "/C=ES/ST=Galicia/L=A Coruna/O=Liceo La Paz/OU=ASIR - TFC Bruno Sande/CN=servidortfc.local"
 
 cat << 'EOF' > /etc/nginx/sites-available/default
 server {
